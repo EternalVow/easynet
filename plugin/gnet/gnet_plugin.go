@@ -2,7 +2,6 @@ package gnet
 
 import (
 	"context"
-	"gnet"
 	"log"
 	"net"
 
