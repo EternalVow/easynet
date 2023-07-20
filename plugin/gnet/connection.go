@@ -2,7 +2,6 @@ package gnet
 
 import (
 	"github.com/panjf2000/gnet/v2"
-	"gnet"
 )
 
 type Connection struct {
