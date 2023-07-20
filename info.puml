@@ -1,0 +1,108 @@
+@startuml
+namespace _interface {
+    interface IGmtNet  {
+        + OnStart(conn net.Conn) error
+        + OnConnect(conn net.Conn) error
+        + OnReceive(conn net.Conn, bytes []byte) error
+        + OnShutdown(conn net.Conn) error
+        + OnClose(conn net.Conn, err error) error
+
+    }
+    interface IPlugin  {
+        + Run() error
+
+    }
+}
+
+
+
+namespace gnet {
+    class GnetGmtNetPlugin << (S,Aquamarine) >> {
+        + Conn net.Conn
+        + Ctx context.Context
+        + Config *base.NetConfig
+        + GnetServer *GnetServer
+        + Handler _interface.IGmtNet
+
+        + Run() error
+
+    }
+    class GnetServer << (S,Aquamarine) >> {
+        - eng gnet.Engine
+        - addr string
+        - multicore bool
+        - handler _interface.IGmtNet
+
+        + Ctx context.Context
+
+        + OnBoot(eng gnet.Engine) gnet.Action
+        + OnShutdown(eng gnet.Engine)
+        + OnOpen(c gnet.Conn) ([]byte, gnet.Action)
+        + OnClose(c gnet.Conn, err error) gnet.Action
+        + OnTick() (time.Duration, gnet.Action)
+        + OnTraffic(c gnet.Conn) gnet.Action
+
+    }
+
+}
+
+
+namespace base {
+    class NetConfig << (S,Aquamarine) >> {
+        + Protocol string
+        + Ip string
+        + Port int32
+
+        + GetProtocol() string
+        + GetIp() string
+        + GetPort() int32
+
+    }
+}
+
+
+namespace gmtnet {
+    class GmtNet << (S,Aquamarine) >> {
+        - handler _interface.IGmtNet
+
+        + Conn net.Conn
+        + Ctx context.Context
+        + GmtNetPlugin _interface.IPlugin
+        + Config *base.NetConfig
+
+    }
+}
+
+
+namespace main {
+    class handler << (S,Aquamarine) >> {
+
+    }
+}
+
+
+"gnet.BuiltinEventEngine" *-- "gnet.GnetServer"
+
+"_interface.IPlugin" <|-- "gnet.GnetGmtNetPlugin"
+
+
+"base.NetConfig" *-- "gnet.GnetServer"
+
+
+
+"base.NetConfig" *-- "gnet.GnetGmtNetPlugin"
+
+
+
+
+"base.NetConfig" *-- "gmtnet.GmtNet"
+
+"main.handler" *-- "gmtnet.GmtNet"
+
+"main.handler" *-- "gnet.GnetServer"
+
+
+"main.handler" *-- "gnet.GnetGmtNetPlugin"
+
+
+@enduml
