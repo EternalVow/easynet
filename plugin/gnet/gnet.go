@@ -3,9 +3,8 @@ package gnet
 import (
 	"context"
 	"fmt"
-	"github.com/baickl/logger"
 	"github.com/EternalVow/easynet/base"
-	"gnet"
+	"github.com/baickl/logger"
 	"strconv"
 	"time"
 
