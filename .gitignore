@@ -9,6 +9,7 @@ bin-release/
 .idea/
 .log/
 example/echo/log/
+example/myproto/log/
 
 # Executables
 *.swf
